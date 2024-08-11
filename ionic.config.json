@@ -1,0 +1,7 @@
+{
+  "name": "Gestor-Moldes",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
