@@ -1,4 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { Element } from 'src/app/models/element.model';
+import { User } from 'src/app/models/user.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { AddUpdateElementComponent } from 'src/app/shared/components/add-update-element/add-update-element.component';
@@ -13,12 +15,27 @@ export class HomePage implements OnInit {
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
 
+  elements: Element[] = [];
+
   ngOnInit() {
   }
+  user(): User{
+    return this.utilsSvc.getFromLocalStorage('user');
+  }
+  ionViewWillEnter(){
+    this.getElements();
+  }
 
-  // ==========  Cerrar Sesion ==========
-  SignOut(){
-    this.firebaseSvc.SignOut();
+  // ==========  Obtener los elementos ==========
+  getElements(){
+    let path = `users/${this.user().uid}/elements`;
+    let sub = this.firebaseSvc.getCollectionData(path).subscribe({
+      next: (res: any) =>{
+        console.log(res);
+        this.elements = res;
+        sub.unsubscribe();
+      }
+    })
   }
 
   // ========== Agregr o Actualizar Elemento ==========

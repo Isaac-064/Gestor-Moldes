@@ -29,7 +29,11 @@ export class AddUpdateElementComponent  implements OnInit {
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
 
-  ngOnInit() { }
+  user = {} as User;
+
+  ngOnInit() { 
+    this.user = this.utilsSvc.getFromLocalStorage('user');
+  }
 
   // ******************** Tomar / Seleccionar Imagen ********************
   async takeImage(){
@@ -39,10 +43,24 @@ export class AddUpdateElementComponent  implements OnInit {
 
   async submit(){
     if (this.form.valid) {
+      let path = `users/${this.user.uid}/elements`
       const loading = await this.utilsSvc.loading();
       await loading. present();
-      this.firebaseSvc.signUp(this.form.value as User).then(async res => {
-        
+      // ===== subir la imagen y obtener la url =====
+      let dataUrl = this.form.value.image
+      let imagePath = `${this.user.uid}/${Date.now()}`;
+      let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
+      this.form.controls.image.setValue(imageUrl);
+      delete this.form.value.id
+      this.firebaseSvc.addDocument(path, this.form.value).then(async res => {
+        this.utilsSvc.dismissModal({ success: true });
+        this.utilsSvc.presentToast({
+          message: 'Elemento creado exitosamente',
+          duration: 1500,
+          color: "success",
+          position: "middle",
+          icon: "checkmark-circle-outline"
+        })
       }).catch(error =>{
         this.utilsSvc.presentToast({
           message: error.message,

@@ -1,9 +1,35 @@
 <app-header title="Inicio"></app-header>
 
 <ion-content>
+  <!-- <ion-icon class="ion-text-center empty" name="create-outline"></ion-icon> -->
 
-  <ion-icon class="ion-text-center empty" name="create-outline"></ion-icon>
-
+  <ion-list>
+    <ion-item-sliding class="element-item" *ngFor="let e of elements">
+      <ion-item>
+        <ion-avatar slot="start">
+          <img [src]="e.image" />
+        </ion-avatar>
+        <ion-label>
+          <div class="name">{{e.Nmolde}}</div>
+          <div class="data">
+            <strong>Molde: </strong> {{e.description}} <br>
+            <strong>Ultima Ubicaciòn: </strong> {{e.location}}
+          </div>
+        </ion-label>
+      </ion-item>
+      <!-- ===== Opciones ===== -->
+      <ion-item-options>
+        <!-- Editar -->
+        <ion-item-option>
+          <ion-icon class="option-btn" name="create-outline"></ion-icon>
+        </ion-item-option>
+        <!-- Eliminar -->
+        <ion-item-option color="danger">
+          <ion-icon class="option-btn" name="trash-outline"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
 
   <!-- ******************** Nuevo Elemento ******************** -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
