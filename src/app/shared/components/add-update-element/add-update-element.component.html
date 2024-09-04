@@ -1,4 +1,117 @@
-<app-header [isModal]= "true" title="Agregar Elemento"></app-header>
+<app-header [isModal]= "true" title="Modificar Elemento"></app-header>
 
 <ion-content>
+    <form [formGroup]="form" class="ion-padding ion-text-center" (ngSubmit)="submit()" (keypress.enter)="submit()" >
+
+        <!-- ========== Si hay imagen ========== -->
+        <ion-avatar *ngIf="form.value.image">
+            <img [src]="form.value.image" />
+        </ion-avatar>
+        <!-- ========== Si no hay imagen ========== -->
+         <ion-icon class="image-icon" name="image-outline" *ngIf="!form.value.image"></ion-icon><br>
+        <!-- ========== Tomar / Seleccionar Imagen ========== -->
+        <ion-button (click)="takeImage()" mode="ios" size="small" shape="round">
+            Tomar / Seleccionar
+        </ion-button>
+
+        <!-- ========== # Molde ========== -->
+        <app-custom-input
+        [control]="form.controls.Nmolde"
+        type="text"
+        label="# Molde"
+        ></app-custom-input>
+        <div class="validators" *ngIf="form.controls.Nmolde.errors && form.controls.Nmolde.touched">
+            <div *ngIf="form.controls.Nmolde.errors?.['required']">Este campo es requerido</div>
+        </div>
+        <!-- ========== Descripcion ========== -->
+        <app-custom-input
+        [control]="form.controls.description"
+        type="text"
+        label="Descripcion"
+        ></app-custom-input>
+        <div class="validators" *ngIf="form.controls.description.errors && form.controls.description.touched">
+            <div *ngIf="form.controls.description.errors?.['required']">Este campo es requerido</div>
+        </div>
+        <!-- ========== Familia ========== -->
+        <app-custom-input
+        [control]="form.controls.family"
+        type="text"
+        label="Familia"
+        ></app-custom-input>
+        <div class="validators" *ngIf="form.controls.family.errors && form.controls.family.touched">
+            <div *ngIf="form.controls.family.errors?.['required']">Este campo es requerido</div>
+        </div>
+        <!-- ========== Modelo ========== -->
+        <app-custom-input
+        [control]="form.controls.model"
+        type="text"
+        label="Modelo"
+        ></app-custom-input>
+        <div class="validators" *ngIf="form.controls.model.errors && form.controls.model.touched">
+            <div *ngIf="form.controls.model.errors?.['required']">Este campo es requerido</div>
+        </div>
+
+        <!-- ========== # Parte ========== -->
+        <app-custom-input
+        [control]="form.controls.Npart"
+        type="text"
+        label="Numero de parte"
+        ></app-custom-input>
+        <div class="validators" *ngIf="form.controls.Npart.errors && form.controls.Npart.touched">
+            <div *ngIf="form.controls.Npart.errors?.['required']">Este campo es requerido</div>
+        </div>
+
+        <!-- ========== Estado ========== -->
+        <app-custom-input
+        [control]="form.controls.state"
+        type="text"
+        label="Estado"
+        ></app-custom-input>
+        <div class="validators" *ngIf="form.controls.state.errors && form.controls.state.touched">
+            <div *ngIf="form.controls.state.errors?.['required']">Este campo es requerido</div>
+        </div>
+        <!-- ========== Localizacion ========== -->
+        <app-custom-input
+        [control]="form.controls.location"
+        type="text"
+        label="Ultima Localizacion"
+        ></app-custom-input>
+        <div class="validators" *ngIf="form.controls.location.errors && form.controls.location.touched">
+            <div *ngIf="form.controls.location.errors?.['required']">Este campo es requerido</div>
+        </div>
+        <!-- ========== # Disparos ========== -->
+        <app-custom-input
+        [control]="form.controls.shoots"
+        type="text"
+        label="Numero de disparos"
+        ></app-custom-input>
+        <div class="validators" *ngIf="form.controls.shoots.errors && form.controls.shoots.touched">
+            <div *ngIf="form.controls.shoots.errors?.['required']">Este campo es requerido</div>
+        </div>
+        <!-- ========== MTTO Prev ========== -->
+        <app-custom-input
+        [control]="form.controls.mttoPrev"
+        type="text"
+        label="Proximo mantenimiento preventivo"
+        ></app-custom-input>
+        <div class="validators" *ngIf="form.controls.mttoPrev.errors && form.controls.mttoPrev.touched">
+            <div *ngIf="form.controls.mttoPrev.errors?.['required']">Este campo es requerido</div>
+        </div>
+        <!-- ========== Comentarios ========== -->
+        <app-custom-input
+        [control]="form.controls.coments"
+        type="text"
+        label="Comentarios"
+        ></app-custom-input>
+        <div class="validators" *ngIf="form.controls.coments.errors && form.controls.coments.touched">
+            <div *ngIf="form.controls.coments.errors?.['required']">Este campo es requerido</div>
+        </div>
+
+        <!-- ========== Extras ========== -->
+        <ion-button mode="ios" class="ion-margin" type="submit" [disabled]="form.invalid">
+            Agregar Elemento
+            <ion-icon slot="end" name="checkmark-circle-outline"></ion-icon>
+        </ion-button>
+
+    </form>
 </ion-content>
