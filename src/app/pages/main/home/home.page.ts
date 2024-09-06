@@ -48,4 +48,34 @@ export class HomePage implements OnInit {
     if(success)  this.getElements();
   }
 
+  
+  // ========== Eliminar Producto ==========
+  async deleteElement(element : Element){
+    let path = `users/${this.user().uid}/elements/${element.id}`
+    const loading = await this.utilsSvc.loading();
+    await loading. present();
+    let imagePath = await this.firebaseSvc.getFilePath(element.image);
+    await this.firebaseSvc.deleteFile(imagePath);
+    this.firebaseSvc.deleteDocument(path).then(async res => {
+      this.elements = this.elements.filter(e => e.id != element.id);
+      this.utilsSvc.presentToast({
+        message: 'Elemento eliminado exitosamente',
+        duration: 1500,
+        color: "success",
+        position: "middle",
+        icon: "checkmark-circle-outline"
+      })
+    }).catch(error =>{
+      this.utilsSvc.presentToast({
+        message: error.message,
+        duration: 2500,
+        color: "primary",
+        position: "middle",
+        icon: "alert-circle-outline"
+      })
+    }).finally(() => {
+      loading.dismiss();
+    })
+  }
+
 }
