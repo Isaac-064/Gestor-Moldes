@@ -1,5 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Element } from 'src/app/models/element.model';
 import { User } from 'src/app/models/user.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -10,6 +11,8 @@ import { UtilsService } from 'src/app/services/utils.service';
   styleUrls: ['./add-update-element.component.scss'],
 })
 export class AddUpdateElementComponent  implements OnInit {
+
+  @Input() element: Element
 
   form = new FormGroup({
     id: new FormControl(''),
@@ -33,6 +36,7 @@ export class AddUpdateElementComponent  implements OnInit {
 
   ngOnInit() { 
     this.user = this.utilsSvc.getFromLocalStorage('user');
+    if(this.element) this.form.setValue(this.element);
   }
 
   // ******************** Tomar / Seleccionar Imagen ********************
@@ -41,38 +45,77 @@ export class AddUpdateElementComponent  implements OnInit {
     this.form.controls.image.setValue(dataUrl);
   }
 
-  async submit(){
+  submit(){
     if (this.form.valid) {
-      let path = `users/${this.user.uid}/elements`
-      const loading = await this.utilsSvc.loading();
-      await loading. present();
-      // ===== subir la imagen y obtener la url =====
+      if (this.element) this.updateElement();
+      else this.createElement();
+    }
+  }
+  // ========== Crear Producto ==========
+  async createElement(){
+    let path = `users/${this.user.uid}/elements`
+    const loading = await this.utilsSvc.loading();
+    await loading. present();
+    // ===== subir la imagen y obtener la url =====
+    let dataUrl = this.form.value.image
+    let imagePath = `${this.user.uid}/${Date.now()}`;
+    let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
+    this.form.controls.image.setValue(imageUrl);
+    delete this.form.value.id
+    this.firebaseSvc.addDocument(path, this.form.value).then(async res => {
+      this.utilsSvc.dismissModal({ success: true });
+      this.utilsSvc.presentToast({
+        message: 'Elemento creado exitosamente',
+        duration: 1500,
+        color: "success",
+        position: "middle",
+        icon: "checkmark-circle-outline"
+      })
+    }).catch(error =>{
+      this.utilsSvc.presentToast({
+        message: error.message,
+        duration: 2500,
+        color: "primary",
+        position: "middle",
+        icon: "alert-circle-outline"
+      })
+    }).finally(() => {
+      loading.dismiss();
+    })
+  }
+  // ========== Actualizar Producto ==========
+  async updateElement(){
+    let path = `users/${this.user.uid}/elements/${this.element.id}`
+    const loading = await this.utilsSvc.loading();
+    await loading. present();
+    // ===== Si cambio la imagen, subir la nueva y obtener la url =====
+    if (this.form.value.image !== this.element.image) {
       let dataUrl = this.form.value.image
-      let imagePath = `${this.user.uid}/${Date.now()}`;
+      let imagePath = await this.firebaseSvc.getFilePath(this.element.image);
       let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
       this.form.controls.image.setValue(imageUrl);
-      delete this.form.value.id
-      this.firebaseSvc.addDocument(path, this.form.value).then(async res => {
-        this.utilsSvc.dismissModal({ success: true });
-        this.utilsSvc.presentToast({
-          message: 'Elemento creado exitosamente',
-          duration: 1500,
-          color: "success",
-          position: "middle",
-          icon: "checkmark-circle-outline"
-        })
-      }).catch(error =>{
-        this.utilsSvc.presentToast({
-          message: error.message,
-          duration: 2500,
-          color: "primary",
-          position: "middle",
-          icon: "alert-circle-outline"
-        })
-      }).finally(() => {
-        loading.dismiss();
-      })
     }
+    delete this.form.value.id
+    this.firebaseSvc.updateDocument(path, this.form.value).then(async res => {
+      this.utilsSvc.dismissModal({ success: true });
+      this.utilsSvc.presentToast({
+        message: 'Elemento actualizado exitosamente',
+        duration: 1500,
+        color: "success",
+        position: "middle",
+        icon: "checkmark-circle-outline"
+      })
+    }).catch(error =>{
+      this.utilsSvc.presentToast({
+        message: error.message,
+        duration: 2500,
+        color: "primary",
+        position: "middle",
+        icon: "alert-circle-outline"
+      })
+    }).finally(() => {
+      loading.dismiss();
+    })
   }
 
 }

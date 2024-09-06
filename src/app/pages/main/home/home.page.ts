@@ -39,11 +39,13 @@ export class HomePage implements OnInit {
   }
 
   // ========== Agregr o Actualizar Elemento ==========
-  addUpdateElement(){
-    this.utilsSvc.presentModal({
+  async addUpdateElement(element?: Element){
+    let success = await this.utilsSvc.presentModal({
       component: AddUpdateElementComponent,
-      cssClass: 'add-update-modal'
+      cssClass: 'add-update-modal',
+      componentProps: { element }
     })
+    if(success)  this.getElements();
   }
 
 }
