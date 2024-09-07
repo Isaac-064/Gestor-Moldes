@@ -4,6 +4,7 @@ import { User } from 'src/app/models/user.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { AddUpdateElementComponent } from 'src/app/shared/components/add-update-element/add-update-element.component';
+import { orderBy } from "firebase/firestore";
 
 @Component({
   selector: 'app-home',
@@ -27,11 +28,21 @@ export class HomePage implements OnInit {
     this.getElements();
   }
 
-  // ==========  Obtener los elementos ==========
+  doRefresh(event) {
+    setTimeout(() => {
+      this.getElements();
+      event.target.complete();
+    }, 1000);
+  }
+
+  // ==========  Obtener elementos ==========
   getElements(){
     let path = `users/${this.user().uid}/elements`;
     this.loading = true;
-    let sub = this.firebaseSvc.getCollectionData(path).subscribe({
+    let query = (
+      orderBy('Nmolde', 'desc')
+    );
+    let sub = this.firebaseSvc.getCollectionData(path, query).subscribe({
       next: (res: any) =>{
         console.log(res);
         this.elements = res;
