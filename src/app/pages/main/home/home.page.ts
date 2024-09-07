@@ -48,6 +48,24 @@ export class HomePage implements OnInit {
     if(success)  this.getElements();
   }
 
+  async ConfirmDeleteElement(element: Element) {
+    this.utilsSvc.presentAlert({
+      header: 'Eliminar elemento',
+      message: '¿Quieres eliminar este elemento?',
+      mode: 'ios',
+      buttons: [
+        {
+          text: 'Cancelar',
+        }, {
+          text: 'Si, eliminar',
+          handler: () => {
+            this.deleteElement(element);
+          }
+        }
+      ]
+    });
+  }
+
   
   // ========== Eliminar Producto ==========
   async deleteElement(element : Element){
