@@ -21,9 +21,11 @@ export class HomePage implements OnInit {
 
   ngOnInit() {
   }
+  
   user(): User{
     return this.utilsSvc.getFromLocalStorage('user');
   }
+
   ionViewWillEnter(){
     this.getElements();
   }
