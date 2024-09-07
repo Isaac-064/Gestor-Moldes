@@ -16,6 +16,7 @@ export class HomePage implements OnInit {
   utilsSvc = inject(UtilsService);
 
   elements: Element[] = [];
+  loading: boolean = false;
 
   ngOnInit() {
   }
@@ -29,10 +30,12 @@ export class HomePage implements OnInit {
   // ==========  Obtener los elementos ==========
   getElements(){
     let path = `users/${this.user().uid}/elements`;
+    this.loading = true;
     let sub = this.firebaseSvc.getCollectionData(path).subscribe({
       next: (res: any) =>{
         console.log(res);
         this.elements = res;
+        this.loading = false;
         sub.unsubscribe();
       }
     })

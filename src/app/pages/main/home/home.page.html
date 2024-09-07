@@ -3,7 +3,28 @@
 <ion-content>
   <!-- <ion-icon class="ion-text-center empty" name="create-outline"></ion-icon> -->
 
-  <ion-list>
+  <!-- ******************** Loading ******************** -->
+  <ion-list *ngIf="loading">
+    <ion-item class="element-item" *ngFor="let e of [1,1,1,1,1,1,1,1,1]">
+      <ion-avatar slot="start">
+        <ion-skeleton-text animated style="width: 100%; height: 100%;"></ion-skeleton-text>
+      </ion-avatar>
+      <ion-label>
+        <div>
+          <ion-skeleton-text animated style="width: 30%"></ion-skeleton-text>
+        </div>
+        <div>
+          <ion-skeleton-text animated style="width: 30%"></ion-skeleton-text>
+        </div>
+        <div>
+          <ion-skeleton-text animated style="width: 30%"></ion-skeleton-text>
+        </div>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!-- ******************** Elements ******************** -->
+  <ion-list *ngIf="!loading">
     <ion-item-sliding class="element-item" *ngFor="let e of elements">
       <ion-item>
         <ion-avatar slot="start">
